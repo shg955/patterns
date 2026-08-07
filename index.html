@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>rhizome — 대기망 시그널</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1017; --panel:#131A24; --ink:#E7EBF0; --muted:#8B96A4; --line:#26313F;
+    --gold:#D8A64E; --buy:#2f9e6f; --sell:#c98b2e; --hair:#1E2732;
+    --sans:"Noto Sans KR",system-ui,-apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 80px}
+  .disc{background:#241811;border:1px solid #6b4a1f;color:#e8c99a;border-radius:10px;padding:11px 14px;font-size:12.5px;margin-bottom:22px}
+  header h1{font-size:27px;font-weight:800;margin:0 0 6px;letter-spacing:-.01em}
+  header .tag{color:var(--muted);margin:0;font-size:14px}
+  .badge{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--gold);border:1px solid #6b4a1f;border-radius:999px;padding:2px 9px;margin-top:8px}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:22px 0}
+  .tile{background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:14px 16px}
+  .tile .k{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .tile .v{font-size:24px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
+  .tile .v.pos{color:var(--buy)} .tile .v.neg{color:var(--sell)}
+  h2{font-size:15px;font-weight:700;margin:26px 0 10px;color:var(--ink)}
+  .updated{font-family:var(--mono);font-size:11px;color:var(--muted)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 8px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-family:var(--mono);font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  td.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .side{font-family:var(--mono);font-weight:600;font-size:11px;padding:2px 7px;border-radius:6px}
+  .side.buy{color:var(--buy);background:rgba(47,158,111,.13)}
+  .side.sell{color:var(--sell);background:rgba(201,139,46,.14)}
+  td.reason{color:var(--muted);font-size:11.5px;font-family:var(--mono)}
+  .concept{background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:16px 18px;color:var(--muted);font-size:13.5px;margin-top:8px}
+  .concept b{color:var(--ink)}
+  footer{margin-top:36px;border-top:1px solid var(--hair);padding-top:16px;color:var(--muted);font-size:11.5px;font-family:var(--mono)}
+  .err{color:var(--sell);font-size:12px}
+  @media (prefers-color-scheme:light){:root{--bg:#F4F6F5;--panel:#fff;--ink:#17202E;--muted:#5F6B78;--line:#C6CDD4;--gold:#9A6B15;--hair:#E1E5E8}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="disc" id="disc">정보 제공 목적일 뿐 투자 자문·권유가 아닙니다. 과거 성과는 미래 수익을 보장하지 않습니다.</div>
+  <header>
+    <h1>rhizome — 대기망(Standby Net Mesh)</h1>
+    <p class="tag">공포·펀더멘털 게이트로 회복 가능한 급락 지점에 그물을 얇게 여러 개 깔고, 반등에 익절하는 저비용 그물망. 아래는 <b>실제 체결</b> 실시간 피드.</p>
+    <span class="badge">LIVE · 정보제공 · 비자문</span>
+  </header>
+
+  <div class="tiles" id="tiles"></div>
+
+  <h2>실시간 체결 <span class="updated" id="updated"></span></h2>
+  <div id="tradesbox"><p class="err" id="loadmsg">불러오는 중…</p></div>
+
+  <h2>이 그물망은</h2>
+  <div class="concept">
+    각 그물은 <b>공포지수(VIX 주식·OVX 유가·MOVE 국채·SKEW 꼬리위험·HY 신용스프레드)</b>가 임계를 넘을 때만
+    회복성 자산을 <b>하루 소액 정액 매집</b>하고, 공포가 진정되며 <b>+수익 floor</b>에 도달하면 lot별로 청산합니다.
+    서로 <b>다른 날 발동</b>하는 독립 축들이라 하나의 예비자본을 공유해도 동시에 다 터지지 않습니다.
+    표시되는 승률·회복은 floor 청산 로직의 <b>구조적 산물이며 안전지표가 아닙니다</b>.
+  </div>
+
+  <footer>
+    <div id="footdisc"></div>
+    <div style="margin-top:8px">rhizome standby-net-mesh · 데이터는 체결(fill) 이후 게시 · 자동 갱신 ~25초</div>
+  </footer>
+</div>
+
+<script>
+const GIST = "https://gist.githubusercontent.com/shg955/a2b56f72a326930e2c86189cd7020876/raw/data.json";
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+function fmt(n){return n==null?"—":Number(n).toLocaleString(undefined,{maximumFractionDigits:2});}
+async function load(){
+  try{
+    const r = await fetch(GIST + "?t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    const d = await r.json();
+    const s = d.summary||{};
+    const pnl = s.realized_pnl_usd;
+    document.getElementById("tiles").innerHTML =
+      tile("실현손익 (라이브)", "$"+fmt(pnl), pnl>0?"pos":(pnl<0?"neg":"")) +
+      tile("라이브 그물", (s.live_slots??"—")+"개") +
+      tile("라이브 체결", (s.live_trades_total??"—")+"건");
+    document.getElementById("updated").textContent = d.updated ? ("· " + d.updated + " 기준") : "";
+    const tr = (d.trades||[]);
+    document.getElementById("tradesbox").innerHTML = tr.length ? (
+      '<table><thead><tr><th>시각(UTC)</th><th>구분</th><th>종목</th><th>체결</th><th>사유</th></tr></thead><tbody>' +
+      tr.map(t=>`<tr><td class="mono">${esc(t.date)}</td>`+
+        `<td><span class="side ${t.side}">${t.side==="buy"?"매수":"매도"}</span></td>`+
+        `<td class="mono">${esc(t.symbol)}</td>`+
+        `<td class="mono">${fmt(t.qty)} @ ${fmt(t.price)}</td>`+
+        `<td class="reason">${esc(t.reason)}</td></tr>`).join("") +
+      '</tbody></table>'
+    ) : '<p class="err">아직 표시할 라이브 체결이 없습니다.</p>';
+    if(d.disclaimer){document.getElementById("disc").textContent=d.disclaimer; document.getElementById("footdisc").textContent=d.disclaimer;}
+  }catch(e){
+    const el=document.getElementById("loadmsg"); if(el) el.textContent="피드를 불러오지 못했습니다 ("+e.message+"). 잠시 후 다시 시도합니다.";
+  }
+}
+function tile(k,v,cls){return `<div class="tile"><div class="k">${k}</div><div class="v ${cls||''}">${v}</div></div>`;}
+load(); setInterval(load, 25000);
+</script>
+</body>
+</html>
