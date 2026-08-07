@@ -26,6 +26,13 @@
   .tile .k{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
   .tile .v{font-size:24px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums}
   .tile .v.pos{color:var(--buy)} .tile .v.neg{color:var(--sell)}
+  .chartcard{background:var(--panel);border:1px solid var(--hair);border-radius:12px;padding:14px 16px;margin:22px 0}
+  .chartcard .ck{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+  #chart .cl-line{fill:none;stroke:var(--gold);stroke-width:2}
+  #chart .cl-zero{stroke:var(--line);stroke-dasharray:3 3}
+  #chart .cl-lbl{fill:var(--muted);font-family:var(--mono)}
+  #chart .cl-val{fill:var(--gold);font-family:var(--mono);font-weight:700}
+  #chart .cl-dot{fill:var(--gold)}
   h2{font-size:15px;font-weight:700;margin:26px 0 10px;color:var(--ink)}
   .updated{font-family:var(--mono);font-size:11px;color:var(--muted)}
   table{width:100%;border-collapse:collapse;font-size:13px}
@@ -51,6 +58,11 @@
     <p class="tag">공포·펀더멘털 게이트로 회복 가능한 급락 지점에 그물을 얇게 여러 개 깔고, 반등에 익절하는 저비용 그물망. 아래는 <b>실제 체결</b> 실시간 피드.</p>
     <span class="badge">LIVE · 정보제공 · 비자문</span>
   </header>
+
+  <div class="chartcard">
+    <div class="ck">누적 실현손익 (라이브)</div>
+    <div id="chart"><p class="cl-lbl" style="font-size:12px">차트 로딩…</p></div>
+  </div>
 
   <div class="tiles" id="tiles"></div>
 
@@ -87,6 +99,7 @@ async function load(){
       tile("라이브 그물", (s.live_slots??"—")+"개") +
       tile("라이브 체결", (s.live_trades_total??"—")+"건");
     document.getElementById("updated").textContent = d.updated ? ("· " + d.updated + " 기준") : "";
+    renderChart(d.pnl_series||[]);
     const tr = (d.trades||[]);
     document.getElementById("tradesbox").innerHTML = tr.length ? (
       '<table><thead><tr><th>시각(UTC)</th><th>구분</th><th>종목</th><th>체결</th><th>사유</th></tr></thead><tbody>' +
@@ -103,6 +116,31 @@ async function load(){
   }
 }
 function tile(k,v,cls){return `<div class="tile"><div class="k">${k}</div><div class="v ${cls||''}">${v}</div></div>`;}
+function renderChart(series){
+  const box=document.getElementById("chart");
+  if(!series||series.length<2){box.innerHTML='<p class="cl-lbl" style="font-size:12px">데이터 누적 중…</p>';return;}
+  const W=860,H=200,L=8,R=64,T=14,B=22;
+  const xs=series.map(p=>p[0]),ys=series.map(p=>p[1]);
+  const x0=Math.min(...xs),x1=Math.max(...xs);
+  let y0=Math.min(0,...ys),y1=Math.max(0,...ys); if(y1<=y0)y1=y0+1;
+  const X=t=>L+(W-L-R)*((t-x0)/((x1-x0)||1));
+  const Y=v=>T+(H-T-B)*(1-(v-y0)/((y1-y0)||1));
+  const ln=series.map((p,i)=>(i?"L":"M")+X(p[0]).toFixed(1)+" "+Y(p[1]).toFixed(1)).join(" ");
+  const ar=ln+" L"+X(x1).toFixed(1)+" "+Y(y0).toFixed(1)+" L"+X(x0).toFixed(1)+" "+Y(y0).toFixed(1)+" Z";
+  const lp=series[series.length-1], zy=Y(0).toFixed(1);
+  const dt=t=>new Date(t*1000).toISOString().slice(0,10);
+  box.innerHTML=
+   '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="누적 실현손익 타임라인" style="width:100%;height:auto;display:block">'+
+   '<defs><linearGradient id="pg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D8A64E" stop-opacity="0.26"/><stop offset="1" stop-color="#D8A64E" stop-opacity="0"/></linearGradient></defs>'+
+   '<line class="cl-zero" x1="'+L+'" y1="'+zy+'" x2="'+(W-R)+'" y2="'+zy+'"/>'+
+   '<path d="'+ar+'" fill="url(#pg)"/>'+
+   '<path class="cl-line" d="'+ln+'"/>'+
+   '<circle class="cl-dot" cx="'+X(lp[0]).toFixed(1)+'" cy="'+Y(lp[1]).toFixed(1)+'" r="3.5"/>'+
+   '<text class="cl-val" x="'+(W-R+6)+'" y="'+Y(lp[1]).toFixed(1)+'" font-size="13" dominant-baseline="middle">$'+fmt(lp[1])+'</text>'+
+   '<text class="cl-lbl" x="'+L+'" y="'+(H-4)+'" font-size="10">'+dt(x0)+'</text>'+
+   '<text class="cl-lbl" x="'+(W-R)+'" y="'+(H-4)+'" font-size="10" text-anchor="end">'+dt(x1)+'</text>'+
+   '</svg>';
+}
 load(); setInterval(load, 25000);
 </script>
 </body>
