@@ -10,6 +10,11 @@ layout: base
   <span style="color:var(--dim);font-size:.8rem">최종 검토 {{ page.last_reviewed }}</span>
 </p>
 
+{% if page.detect %}<div class="detect">
+  <h2 style="margin-top:0">이 문제가 지금 있는지 어떻게 아나</h2>
+  <p style="margin-bottom:0">{{ page.detect | markdownify | remove: '<p>' | remove: '</p>' }}</p>
+</div>{% endif %}
+
 <h2>언제 통하는가</h2>
 <div class="scroll"><table><thead><tr><th>축</th><th>적용되는 값</th></tr></thead><tbody>
 {% for axis in site.axes %}{% assign key = axis[0] %}{% assign all = axis[1] %}
