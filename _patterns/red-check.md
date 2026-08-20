@@ -11,7 +11,6 @@ applies_when:
   codebase_maturity: [mature, legacy]
   test_level:        [partial, strong]
   risk_tolerance:    [low, medium]
-  typing:            [strong, loose, any]
 evidence:
   - kind: own-measurement
     ref: soxl#67
@@ -27,6 +26,9 @@ evidence:
     ref: soxl#74
     what: >-
       패치를 모듈수준에 두는 잘못된 처방으로 바꾸면 원복 프로브가 1 failed 로 잡는다.
+detect: >-
+  가드가 있는 줄을 지우거나 값을 뒤집고 테스트를 돌린다. green 이면 그 가드는
+  아무것도 안 막고 있다. 이게 이 패턴의 탐지법이자 패턴 자체다.
 related: [independent-harness, verify-your-instruments]
 ---
 
@@ -38,6 +40,30 @@ related: [independent-harness, verify-your-instruments]
 가드가 있는데 아무것도 안 막고 있다. 리팩터링에서 조용히 사라지고, 사라진 것을 아무도 모른 채
 다음 사고까지 간다. 특히 에이전트가 "정리" 하는 과정에서 사라지기 쉽다 — 그 줄이 왜 있는지
 모르니까.
+
+## 어떻게 적용하나
+1. **가드를 지목한다.** "이 줄이 없으면 무엇이 잘못되나" 에 한 문장으로 답할 수 있어야 한다.
+   답이 안 나오면 그건 가드가 아니라 그냥 코드다.
+2. **잘못된 결과를 단정하는 테스트를 쓴다.** 가드의 존재를 단정하지 마라 — *가드가 막는 결과*를
+   단정해라. `assert clamp_exists` 는 리팩터링에 살아남고 `assert ledger_qty == account_qty` 는 안 살아남는다.
+3. **가드를 임시로 제거하고 돌린다.** red 여야 한다. green 이면 테스트가 그 가드를 안 보고 있다.
+4. **원복하고 red 였던 사실을 기록한다.** 어느 단정이 red 였는지, 그리고 **어느 변형은 통과하는지**
+   같이 적는다(아래 "잘못 적용하면" 참조).
+5. 가능하면 **자동화한다.** 우리는 사본 트리에서 변이(mutation)를 돌려 red 를 확인하고 그 결과를
+   티켓에 남겼다. 라이브 코드를 만지지 않고 확인할 수 있다.
+
+```
+# 우리가 실제로 쓴 형태 (soxl#67)
+현재 코드   →  assert kept_qty == HEAD_snapshot["kept_qty"]     # 비트동일, 허용오차 0
+변이 A      →  sold_sweep 를 옛 표기로 되돌림  →  red (6.2e−17 차를 잡는다)
+변이 B      →  하한 max(...,0.0) 제거          →  red (kept_qty 가 음수)
+변이 C      →  요청량을 감액                    →  red (과거 배당 권리수량이 틀어진다)
+기록        →  "변이 D(안전방향)는 통과한다"    ← 감시 범위를 명시
+```
+
+## 적용됐는지 확인하는 방법
+가드를 지운 사본에서 테스트를 돌려 **red 를 눈으로 본다.** "red 가 될 것이다" 는 증거가 아니다 —
+우리는 그 확인을 안 해서 감시가 비어 있던 걸 나중에 발견한 적이 있다.
 
 ## 잘못 적용하면
 **안전방향으로 틀리는 변형은 감시가 안 된다.** red-check 를 심을 때 "이 변형은 통과한다"를

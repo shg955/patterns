@@ -54,8 +54,7 @@ function apply(){
     for(const s of sels){
       if(!s.value) continue;
       const vals=(el.dataset[s.dataset.axis]||'').split(',');
-      // typing 축의 'any' 는 모든 값을 받는다
-      if(!(vals.includes(s.value)||vals.includes('any'))){ ok=false; break; }
+      if(!vals.includes(s.value)){ ok=false; break; }
     }
     el.style.display = ok?'':'none';
     if(ok){ shown++; if(el.dataset.universality==='universal') univ++; }

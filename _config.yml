@@ -35,13 +35,11 @@ axes:
   codebase_maturity: [greenfield, mature, legacy]
   test_level:        [none, partial, strong]
   risk_tolerance:    [low, medium, high]
-  typing:            [strong, loose, any]
 
 axis_labels:
   team_size:         팀 규모
   codebase_maturity: 코드베이스 성숙도
   test_level:        테스트 수준
   risk_tolerance:    리스크 허용도
-  typing:            타입 강도
 
 exclude: [SCHEMA.md, README.md, Gemfile, Gemfile.lock, vendor]

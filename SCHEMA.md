@@ -32,7 +32,6 @@ applies_when:                                  # 🔴 필터 축. 해당하는 �
   codebase_maturity: [greenfield, mature, legacy]
   test_level:        [none, partial, strong]
   risk_tolerance:    [low, medium, high]
-  typing:            [strong, loose, any]
 
 evidence:                                      # 🔴 비어 있으면 등록 불가
   - kind: own-incident | own-measurement | external-claim | external-measurement
@@ -95,3 +94,27 @@ frontmatter 는 발행 메타(`ms.date`·`ms.topic`·`author`)이고 **의미 �
 - ✅ 넣는다: 손실·비용 규모($64 · 연 $10), 실패 건수(274회 중 265), 시간(592초), 비율(97%)
 - ❌ 뺀다: 계좌 잔고·매수여력, `order_id`, API 키, 전략 파라미터 실값, 보유 수량
 - 티켓 번호(`soxl#66`)는 넣는다 — 추적성이 근거의 일부이고 그 레포는 비공개다
+
+
+## 축을 지운 기록
+
+**`typing`(타입 강도) 축을 2026-08-20 에 삭제했다.** 패턴 8건 전부가 `[strong, loose, any]`
+세 값을 다 가져 **어떤 조합에서도 판별하지 않았다.** 판별하지 않는 필터는 좁히는 것처럼
+보이면서 좁히지 않으므로 읽는 사람을 오도한다 — 이 사이트의 `verify-your-instruments`
+패턴이 말하는 것과 같다: 항상 같은 값을 내는 계기는 아무것도 세고 있지 않다.
+
+같이 지운 것: `index.html` 의 `vals.includes('any')` 폴백. `any` 는 `typing` 전용이었고,
+남겨두면 미래에 실수로 `any` 를 쓴 패턴이 **모든 필터를 조용히 통과**한다.
+
+축을 되살릴 조건: 외부 패턴을 들여왔을 때 타입 강도로 실제로 갈리는 것이 3건 이상 모이면.
+그때는 값을 `[strong, loose]` 2개로 시작한다(`any` 는 폴백을 다시 만들게 되므로 쓰지 않는다).
+
+### 축 판별력 점검 (등록 시마다 돌려라)
+```
+축                 값별 패턴 수                          판정
+team_size          solo 8 · small 8 · large 6            판별함
+codebase_maturity  greenfield 3 · mature 8 · legacy 8    판별함
+test_level         none 4 · partial 8 · strong 8         판별함
+risk_tolerance     low 8 · medium 8 · high 3             판별함
+전 조합 81개 → 결과 3~8건 · 0건 조합 0개
+```
