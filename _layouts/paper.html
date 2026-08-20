@@ -1,0 +1,25 @@
+---
+layout: base
+---
+<h1>{{ page.title | default: page.paper }}</h1>
+{% if page.claim %}<p class="lede">{{ page.claim }}</p>{% endif %}
+<p>
+  {% if page.status %}<span class="tag" style="color:var(--dim)">{{ page.status }}</span>{% endif %}
+  {% if page.year %}<span style="color:var(--dim);font-size:.85rem">{{ page.year }}</span>{% endif %}
+  {% if page.venue %}<span style="color:var(--dim);font-size:.85rem">· {{ page.venue }}</span>{% endif %}
+  {% if page.last_reviewed %}<span style="color:var(--dim);font-size:.8rem">· 최종 검토 {{ page.last_reviewed }}</span>{% endif %}
+</p>
+
+{% if page.paper or page.authors or page.doi %}
+<div class="scroll"><table><tbody>
+{% if page.paper %}<tr><th>논문</th><td>{{ page.paper }}</td></tr>{% endif %}
+{% if page.authors %}<tr><th>저자</th><td>{{ page.authors | join: ", " }}</td></tr>{% endif %}
+{% if page.doi %}<tr><th>DOI / arXiv</th><td><a href="{{ page.doi }}">{{ page.doi }}</a></td></tr>{% endif %}
+{% if page.method %}<tr><th>검증 방법</th><td>{{ page.method }}</td></tr>{% endif %}
+{% if page.result %}<tr><th>결과</th><td>{{ page.result }}</td></tr>{% endif %}
+{% if page.limits %}<tr><th>한계</th><td>{{ page.limits }}</td></tr>{% endif %}
+{% if page.relevance %}<tr><th>우리 문제와의 접점</th><td>{{ page.relevance }}</td></tr>{% endif %}
+</tbody></table></div>
+{% endif %}
+
+{{ content }}

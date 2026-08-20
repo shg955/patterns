@@ -1,0 +1,47 @@
+title: Patterns & Notes
+description: 언제 이 패턴이 통하는가 — 적용 조건을 명시한 실무 패턴과 연구 노트
+lang: ko
+
+# 🔴 이 사이트의 구조: DB 없음. md 파일 한 개 = 패턴 한 개 = 페이지 한 개.
+#    frontmatter 가 기계가 읽는 메타이고, Jekyll 컬렉션이 _patterns/ 폴더를 훑어
+#    화면을 구성한다. 나중에 레포에 grep/검색을 돌리면 그 자체가 DB가 된다.
+collections:
+  patterns:          # 에이전트 엔지니어링
+    output: true
+    permalink: /agentic/:name/
+  platform:          # 플랫폼 엔지니어링
+    output: true
+    permalink: /platform/:name/
+  papers:            # 논문 공부 노트
+    output: true
+    permalink: /papers/:name/
+
+collection_labels:
+  patterns: 에이전트 엔지니어링
+  platform: 플랫폼 엔지니어링
+  papers:   논문 노트
+
+defaults:
+  - scope: { path: "", type: patterns }
+    values: { layout: pattern }
+  - scope: { path: "", type: platform }
+    values: { layout: pattern }
+  - scope: { path: "", type: papers }
+    values: { layout: paper }
+
+# 필터 축 — index.html 이 이 값들로 드롭다운을 만든다. 축을 늘리면 여기부터 고친다.
+axes:
+  team_size:         [solo, small, large]
+  codebase_maturity: [greenfield, mature, legacy]
+  test_level:        [none, partial, strong]
+  risk_tolerance:    [low, medium, high]
+  typing:            [strong, loose, any]
+
+axis_labels:
+  team_size:         팀 규모
+  codebase_maturity: 코드베이스 성숙도
+  test_level:        테스트 수준
+  risk_tolerance:    리스크 허용도
+  typing:            타입 강도
+
+exclude: [SCHEMA.md, README.md, Gemfile, Gemfile.lock, vendor]

@@ -1,0 +1,35 @@
+---
+layout: base
+---
+<h1>{{ page.title }}</h1>
+<p class="lede">{{ page.claim }}</p>
+<p>
+  <span class="tag o-{{ page.origin }}">{{ page.origin }}</span>
+  <span class="tag u-{{ page.universality }}">{{ page.universality }}</span>
+  <span class="tag" style="color:var(--dim)">{{ page.status }}</span>
+  <span style="color:var(--dim);font-size:.8rem">최종 검토 {{ page.last_reviewed }}</span>
+</p>
+
+<h2>언제 통하는가</h2>
+<div class="scroll"><table><thead><tr><th>축</th><th>적용되는 값</th></tr></thead><tbody>
+{% for axis in site.axes %}{% assign key = axis[0] %}{% assign all = axis[1] %}
+{% assign mine = page.applies_when[key] %}
+<tr><th>{{ site.axis_labels[key] }}</th><td>
+{% for v in all %}{% if mine contains v %}<strong>{{ v }}</strong>{% else %}<span style="color:var(--dim);text-decoration:line-through">{{ v }}</span>{% endif %}{% unless forloop.last %} · {% endunless %}{% endfor %}
+</td></tr>{% endfor %}
+</tbody></table></div>
+
+<h2>근거</h2>
+<div class="scroll"><table><thead><tr><th>종류</th><th>출처</th><th>무엇이 관측됐나</th></tr></thead><tbody>
+{% for e in page.evidence %}<tr>
+<td><code>{{ e.kind }}</code></td>
+<td>{% if e.ref contains '://' %}<a href="{{ e.ref }}">링크</a>{% else %}<code>{{ e.ref }}</code>{% endif %}</td>
+<td>{{ e.what }}</td></tr>{% endfor %}
+</tbody></table></div>
+
+{{ content }}
+
+{% if page.related %}<h2>관련</h2><ul>
+{% for r in page.related %}{% assign t = site.patterns | where:"id", r | first %}
+<li>{% if t %}<a href="{{ t.url | relative_url }}">{{ t.title }}</a>{% else %}<span style="color:var(--dim)">{{ r }} (미작성)</span>{% endif %}</li>
+{% endfor %}</ul>{% endif %}

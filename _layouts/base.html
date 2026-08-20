@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="{{ site.lang }}"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% if page.title %}{{ page.title }} · {% endif %}{{ site.title }}</title>
+<meta name="description" content="{{ page.claim | default: site.description }}">
+<style>
+:root{--bg:#fff;--fg:#16181d;--dim:#6b7280;--line:#e5e7eb;--card:#fafafa;
+      --ours:#0f766e;--ext:#b45309;--syn:#4338ca;--univ:#065f46;--warn:#9a3412}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0d0f13;--fg:#e6e8ec;--dim:#9aa3af;--line:#262a33;--card:#14171d;
+  --ours:#5eead4;--ext:#fcd34d;--syn:#a5b4fc;--univ:#6ee7b7;--warn:#fdba74}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:16px/1.7 ui-sans-serif,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+.wrap{max-width:920px;margin:0 auto;padding:2rem 1.25rem 5rem}
+a{color:inherit}
+header.site{border-bottom:1px solid var(--line);padding-bottom:1.25rem;margin-bottom:1.5rem}
+h1{font-size:1.6rem;margin:.2rem 0}
+.lede{color:var(--dim);margin:.5rem 0 0}
+.tag{display:inline-block;font-size:.72rem;padding:.12rem .5rem;border-radius:999px;
+  border:1px solid currentColor;vertical-align:.1em}
+.o-ours{color:var(--ours)}.o-external{color:var(--ext)}.o-synthesized{color:var(--syn)}
+.u-universal{color:var(--univ)}.u-conditional{color:var(--dim)}.u-narrow{color:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.45rem .6rem;text-align:left;vertical-align:top}
+th{background:var(--card);font-weight:600}
+code{background:var(--card);padding:.1rem .3rem;border-radius:4px;font-size:.9em}
+.scroll{overflow-x:auto}
+footer.site{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--line);
+  color:var(--dim);font-size:.85rem}
+</style></head><body><div class="wrap">
+<header class="site">
+  <div style="font-size:.8rem;color:var(--dim)"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></div>
+  {{ content_header }}
+</header>
+{{ content }}
+<footer class="site">
+  <p><strong>구조</strong> — DB 없음. <code>_patterns/</code> 의 md 파일 1개가 패턴 1개이자 페이지 1개다.
+  frontmatter 가 기계가 읽는 메타이고 화면은 그 폴더를 기준으로 구성된다.
+  레포에 <code>grep</code> 을 돌리면 그 자체가 DB다.</p>
+  <p><strong>원칙</strong> — 패턴은 보편적 진리가 아니다. 각 패턴은 <em>언제 통하는가</em>를
+  필터 가능한 필드로 밝힌다. 근거 없는 패턴은 등록하지 않는다.</p>
+</footer>
+</div></body></html>
